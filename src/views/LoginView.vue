@@ -3,10 +3,11 @@ import { computed, shallowRef } from 'vue'
 import { ArrowRight, LoaderCircle } from '@lucide/vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { assertConfigured } from '@/api/client'
 
 const auth = useAuthStore()
 const router = useRouter()
+const region = shallowRef('')
+const bucket = shallowRef('')
 const username = shallowRef('')
 const accessKeyId = shallowRef('')
 const accessKeySecret = shallowRef('')
@@ -14,6 +15,8 @@ const submitting = shallowRef(false)
 const error = shallowRef('')
 
 const canSubmit = computed(() =>
+  region.value.trim() &&
+  bucket.value.trim() &&
   username.value.trim() &&
   accessKeyId.value.trim() &&
   accessKeySecret.value.trim() &&
@@ -25,8 +28,9 @@ async function submit() {
   submitting.value = true
   error.value = ''
   try {
-    assertConfigured()
     await auth.setOssCredentials({
+      region: region.value,
+      bucket: bucket.value,
       username: username.value,
       accessKeyId: accessKeyId.value,
       accessKeySecret: accessKeySecret.value
@@ -45,7 +49,9 @@ async function submit() {
     <section class="login-content" aria-labelledby="login-title">
       <h1 id="login-title" class="login-title">Montnote</h1>
       <form class="login-form" @submit.prevent="submit">
-        <input v-model="username" class="login-input" type="text" autocomplete="username" placeholder="用户名" :disabled="submitting" />
+        <input v-model="region" class="login-input" type="text" autocomplete="off" placeholder="OSS Region" :disabled="submitting" />
+        <input v-model="bucket" class="login-input" type="text" autocomplete="off" placeholder="OSS Bucket" :disabled="submitting" />
+        <input v-model="username" class="login-input" type="text" autocomplete="off" placeholder="用户名（OSS 目录前缀）" :disabled="submitting" />
         <input v-model="accessKeyId" class="login-input" type="text" autocomplete="off" placeholder="AccessKey ID" :disabled="submitting" />
         <input v-model="accessKeySecret" class="login-input" type="password" autocomplete="current-password" placeholder="AccessKey Secret" :disabled="submitting" />
         <p v-if="error" class="login-error">{{ error }}</p>

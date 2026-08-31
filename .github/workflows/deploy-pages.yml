@@ -36,8 +36,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_OSS_REGION: ${{ vars.VITE_OSS_REGION }}
-          VITE_OSS_BUCKET: ${{ vars.VITE_OSS_BUCKET }}
           VITE_CREDENTIALS_KEY: ${{ vars.VITE_CREDENTIALS_KEY }}
 
       # Vue Router uses history mode. Serving index.html as the Pages 404

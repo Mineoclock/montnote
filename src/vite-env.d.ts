@@ -2,6 +2,5 @@
 /// <reference types="vite-plugin-pwa/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_OSS_REGION: string
-  readonly VITE_OSS_BUCKET: string
+  readonly VITE_CREDENTIALS_KEY: string
 }

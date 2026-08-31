@@ -35,9 +35,6 @@ interface OssClient {
   listV2(options: ListOptions): Promise<OssListResponse>
 }
 
-const region = import.meta.env.VITE_OSS_REGION
-const bucket = import.meta.env.VITE_OSS_BUCKET
-
 let credentials: OssCredentials | null = null
 let client: OssClient | null = null
 
@@ -45,8 +42,8 @@ export function setOssCredentials(next: OssCredentials | null) {
   credentials = next
   client = next
     ? new OSS({
-      region,
-      bucket,
+      region: next.region,
+      bucket: next.bucket,
       accessKeyId: next.accessKeyId,
       accessKeySecret: next.accessKeySecret,
       secure: true
@@ -61,7 +58,6 @@ export function currentUsername() {
 
 function activeClient() {
   if (!client) throw Unauthorized()
-  if (!region || !bucket) throw new Error('未配置 OSS：请在 montnote-web/.env 设置 VITE_OSS_REGION 和 VITE_OSS_BUCKET 后重启')
   return client
 }
 

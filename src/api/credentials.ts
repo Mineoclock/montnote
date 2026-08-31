@@ -1,4 +1,6 @@
 export interface OssCredentials {
+  region: string
+  bucket: string
   username: string
   accessKeyId: string
   accessKeySecret: string
@@ -6,7 +8,7 @@ export interface OssCredentials {
 
 const LS_KEY = 'montnote.oss.credentials'
 const LEGACY_SK_KEY = 'montnote.sk'
-const VERSION = 2
+const VERSION = 3
 
 function xorEncryptDecrypt(data: string, key: string): string {
   if (!key) return data
@@ -35,21 +37,40 @@ function secretKey(): string {
 
 function normalizeCredentials(input: OssCredentials): OssCredentials {
   return {
-    username: input.username.trim(),
-    accessKeyId: input.accessKeyId.trim(),
-    accessKeySecret: input.accessKeySecret.trim()
+    region: String(input.region ?? '').trim(),
+    bucket: String(input.bucket ?? '').trim(),
+    username: normalizeUsername(String(input.username ?? '')),
+    accessKeyId: String(input.accessKeyId ?? '').trim(),
+    accessKeySecret: String(input.accessKeySecret ?? '').trim()
   }
 }
 
-export function validateUsername(username: string) {
-  if (!/^[A-Za-z0-9_-]{1,64}$/.test(username)) {
-    throw new Error('用户名只能包含字母、数字、下划线和连字符，长度 1-64')
+function normalizeUsername(username: string) {
+  return username.replace(/^\/+|\/+$/g, '')
+}
+
+function validateCredentials(credentials: OssCredentials) {
+  if (!credentials.region) throw new Error('OSS Region 不能为空')
+  if (!credentials.bucket) throw new Error('OSS Bucket 不能为空')
+  validateUsername(credentials.username)
+  if (!credentials.accessKeyId) throw new Error('AccessKey ID 不能为空')
+  if (!credentials.accessKeySecret) throw new Error('AccessKey Secret 不能为空')
+}
+
+function validateUsername(username: string) {
+  const segments = username.split('/')
+  if (
+    !username ||
+    username.length > 128 ||
+    segments.some((segment) => !segment || segment === '.' || segment === '..' || !/^[A-Za-z0-9_.-]+$/.test(segment))
+  ) {
+    throw new Error('OSS 目录前缀只能包含字母、数字、点、下划线、连字符和斜杠，长度 1-128')
   }
 }
 
 export async function saveCredentials(input: OssCredentials) {
   const credentials = normalizeCredentials(input)
-  validateUsername(credentials.username)
+  validateCredentials(credentials)
   const encrypted = encode(JSON.stringify(credentials), secretKey())
   localStorage.setItem(LS_KEY, JSON.stringify({ v: VERSION, data: encrypted }))
   localStorage.removeItem(LEGACY_SK_KEY)
@@ -64,7 +85,7 @@ export async function loadCredentials(): Promise<OssCredentials | null> {
     if (payload.v !== VERSION || !payload.data) return null
     const decrypted = decode(payload.data, secretKey())
     const credentials = normalizeCredentials(JSON.parse(decrypted) as OssCredentials)
-    validateUsername(credentials.username)
+    validateCredentials(credentials)
     return credentials
   } catch {
     localStorage.removeItem(LS_KEY)

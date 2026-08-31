@@ -1,7 +1,7 @@
 import type { Note, NoteListItem, NoteWrite, Notebook, TrashNote } from './types'
 import type { OssCredentials } from './credentials'
 import { beginGlobalLoading, endGlobalLoading } from '@/composables/useGlobalLoading'
-import { ApiError, toApiError, Unauthorized } from './errors'
+import { ApiError, toApiError } from './errors'
 import { currentUsername, setOssCredentials } from './oss'
 import * as notes from './domain/notes'
 import * as trash from './domain/trash'
@@ -108,10 +108,4 @@ export function renameNotebook(id: string, name: string) {
 
 export function deleteNotebook(id: string) {
   return request<{ notebooks: Notebook[] }>((userId) => notebooks.remove(userId, id))
-}
-
-export function assertConfigured() {
-  const region = import.meta.env.VITE_OSS_REGION
-  const bucket = import.meta.env.VITE_OSS_BUCKET
-  if (!region || !bucket) throw Unauthorized('未配置 OSS：请在 montnote-web/.env 设置 VITE_OSS_REGION 和 VITE_OSS_BUCKET 后重启')
 }
