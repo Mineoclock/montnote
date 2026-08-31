@@ -1,0 +1,162 @@
+:root {
+  /* color */
+  --bg: #000000;
+  --bg-soft: #0c0c0d;
+  --surface: rgba(34, 34, 36, 0.58);
+  --surface-strong: rgba(42, 42, 44, 0.68);
+  --surface-selected: rgba(255, 255, 255, 0.1);
+  --text: #f5f5f7;
+  --text-secondary: rgba(245, 245, 247, 0.62);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --accent: #f5f5f7;
+  --accent-soft: rgba(255, 255, 255, 0.18);
+  --accent-contrast: #050505;
+  --highlight: rgba(255, 214, 10, 0.46);
+  --semantic-highlight-yellow: #665C00;
+  --semantic-highlight-green: #2B5A3A;
+  --semantic-highlight-blue: #1E3A5F;
+  --semantic-highlight-purple: #4C3A73;
+  --semantic-highlight-pink: #6B3148;
+  --semantic-highlight-orange: #6A4120;
+  --semantic-highlight-red: #6A2E2E;
+
+  /* glass */
+  --glass-fab: rgba(36, 36, 36, 0.98);
+  --glass-fab-border: 1px solid var(--border-strong);
+  --glass-bg: rgba(255, 255, 255, 0.075);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
+  --glass-bg-soft: rgba(255, 255, 255, 0.055);
+  --glass-border: 1px solid var(--border);
+  --glass-dialog-border: 1px solid var(--border);
+  --dialog-bg: rgba(22, 22, 22, 0.98);
+  --glass-highlight: none;
+  --glass-shadow: none;
+  --glass-shadow-soft: none;
+
+  /* radius */
+  --radius-card: 12px;
+  --radius-control: 10px;
+  --radius-control-sm: 8px;
+  --radius-chip: 12px;
+  --radius-pill: 999px;
+  --tool-fade-bg: rgba(19, 19, 20, 0.88);
+
+  /* spacing scale */
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* safe layout insets */
+  --page-pad-x: calc(var(--space-3) + env(safe-area-inset-left, 0px));
+  --page-pad-y: calc(var(--space-3) + env(safe-area-inset-top, 0px));
+  --page-pad-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+
+  /* typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #eceef2;
+    --bg-soft: #f8f8fa;
+    --surface: rgba(255, 255, 255, 0.54);
+    --surface-strong: rgba(255, 255, 255, 0.68);
+    --surface-selected: rgba(20, 22, 28, 0.065);
+    --text: #171719;
+    --text-secondary: rgba(23, 23, 25, 0.58);
+    --border: rgba(20, 22, 28, 0.09);
+    --border-strong: rgba(20, 22, 28, 0.16);
+    --accent: #111112;
+    --accent-soft: rgba(17, 17, 18, 0.1);
+    --accent-contrast: #ffffff;
+    --highlight: rgba(255, 224, 102, 0.74);
+    --semantic-highlight-yellow: #FFF3BF;
+    --semantic-highlight-green: #D3F9D8;
+    --semantic-highlight-blue: #D0EBFF;
+    --semantic-highlight-purple: #E5DBFF;
+    --semantic-highlight-pink: #FCC2D7;
+    --semantic-highlight-orange: #FFE8CC;
+    --semantic-highlight-red: #FFD8D8;
+    --glass-dialog-border: none;
+    --glass-fab: rgba(248, 248, 248, 0.98);
+    --glass-bg: rgba(255, 255, 255, 0.46);
+    --glass-bg-strong: rgba(255, 255, 255, 0.62);
+    --glass-bg-soft: rgba(255, 255, 255, 0.34);
+    --glass-shadow: none;
+    --glass-shadow-soft: none;
+    --dialog-bg: rgba(255, 255, 255, 0.98);
+    --tool-fade-bg: rgba(246, 247, 249, 0.9);
+    color-scheme: light;
+  }
+}
+
+/* breakpoints (use literally in media queries): tablet 768px, desktop 1024px */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 58%, transparent);
+  outline-offset: 2px;
+}
+
+button,
+[role='button'],
+a,
+select,
+summary {
+  -webkit-touch-callout: none;
+}
