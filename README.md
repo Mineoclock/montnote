@@ -6,7 +6,7 @@
 
 每一条笔记都是一个OSS文件
 
-开启时，配置 OSS Region、Bucket、OSS 目录前缀和 AccessKey（均本地存储）
+开启时，配置 OSS Region（比如oss-cn-hangzhou）、Bucket、OSS 目录前缀和 AccessKey（均本地存储）
 
 建议对accessKey配置RAM Policy
 ```
