@@ -35,8 +35,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          VITE_CREDENTIALS_KEY: ${{ vars.VITE_CREDENTIALS_KEY }}
 
       # Vue Router uses history mode. Serving index.html as the Pages 404
       # fallback keeps direct links such as /edit and /search working.

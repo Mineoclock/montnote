@@ -9,6 +9,9 @@ export interface OssCredentials {
 const LS_KEY = 'montnote.oss.credentials'
 const LEGACY_SK_KEY = 'montnote.sk'
 const VERSION = 3
+// This is obfuscation for localStorage, not a security boundary. Keep it
+// stable so credentials remain readable after a page refresh.
+const DEFAULT_CREDENTIALS_KEY = '182c10542c5bd90842b2465f08deb2972687a92c7af6bb35e72e88ab9c5f306d'
 
 function xorEncryptDecrypt(data: string, key: string): string {
   if (!key) return data
@@ -28,11 +31,7 @@ function decode(data: string, key: string): string {
 }
 
 function secretKey(): string {
-  const key = import.meta.env.VITE_CREDENTIALS_KEY
-  if (!key) {
-    throw new Error('缺少环境变量 VITE_CREDENTIALS_KEY，请在 .env 中配置')
-  }
-  return key
+  return import.meta.env.VITE_CREDENTIALS_KEY || DEFAULT_CREDENTIALS_KEY
 }
 
 function normalizeCredentials(input: OssCredentials): OssCredentials {
