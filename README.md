@@ -2,6 +2,8 @@
 
 基于阿里云OSS对象存储的PWA笔记应用
 
+在线地址：https://mineoclock.github.io/montnote
+
 每一条笔记都是一个OSS文件
 
 开启时，配置OSS目录和accessKey（均本地存储）
