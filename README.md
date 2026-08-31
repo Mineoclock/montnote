@@ -16,12 +16,12 @@
     {
       "Effect": "Allow",
       "Action": "oss:ListObjects",
-      "Resource": "acs:oss:*:*:montnote-chengdu-safe",
+      "Resource": "acs:oss:*:*:{{bucket}}",
       "Condition": {
         "StringLike": {
           "oss:Prefix": [
-            "wjs",
-            "wjs/*"
+            "{{prefix}}",
+            "{{prefix}}/*"
           ]
         }
       }
@@ -33,9 +33,11 @@
         "oss:PutObject",
         "oss:DeleteObject"
       ],
-      "Resource": "acs:oss:oss-*:*:montnote-chengdu-safe/wjs/*"
+      "Resource": "acs:oss:oss-*:*:{{bucket}}/{{prefix}}/*"
     }
   ]
 }
 ```
+
+注意配置oss的cors
 
