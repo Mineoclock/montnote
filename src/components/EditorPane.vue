@@ -27,8 +27,9 @@ import {
   Waves
 } from '@lucide/vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import { Extension, Mark, mergeAttributes, type JSONContent } from '@tiptap/core'
+import { Extension, Mark, markInputRule, mergeAttributes, type JSONContent } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
+import { Code as TiptapCode } from '@tiptap/extension-code'
 import { TextStyle, BackgroundColor, FontSize } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 import { TaskList } from '@tiptap/extension-task-list'
@@ -211,6 +212,15 @@ const WavyUnderline = Mark.create({
   }
 })
 
+// Tiptap v3 行内 code 的输入规则正则为 /(^|[^`])`([^`]+)`(?!`)$/，前导守卫是捕获组，
+// markInputRule 会把守卫字符连同开头反引号一起删掉，导致反引号前的字符“消失”。
+// 改用 lookbehind 守卫，守卫不进入匹配字符串，字符得以保留。
+const InlineCode = TiptapCode.extend({
+  addInputRules() {
+    return [markInputRule({ find: /(?<=^|[^`])`([^`]+)`(?!`)$/, type: this.type })]
+  }
+})
+
 const SemanticHighlight = Extension.create({
   name: 'semanticHighlight',
   addGlobalAttributes() {
@@ -260,7 +270,8 @@ const editor = useEditor({
     }
   },
   extensions: [
-    StarterKit.configure({ link: false }),
+    StarterKit.configure({ link: false, code: false }),
+    InlineCode,
     TextStyle,
     FontSize,
     Color,
@@ -287,7 +298,9 @@ const editor = useEditor({
       if (!v) return false
       event.preventDefault()
       const normalizedText = text.replace(/\r\n?/g, '\n')
-      if (!normalizedText.includes('\n')) {
+      // 代码块内按纯文本插入（换行作为文本保留在块内）；
+      // 否则多行文本会被转成段落块节点，而 codeBlock 只允许文本，块节点会被挤到代码块外面
+      if (v.isActive('codeBlock') || !normalizedText.includes('\n')) {
         view.dispatch(view.state.tr.insertText(normalizedText))
         return true
       }
