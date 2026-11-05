@@ -309,7 +309,8 @@ const editor = useEditor({
     }
   },
   onCreate: () => {
-    editor.value?.setEditable(!note.isTrash)
+    // 切换只读状态不是正文修改，避免触发 onUpdate 和自动保存。
+    editor.value?.setEditable(!note.isTrash, false)
     applyHighlight()
     requestAnimationFrame(() => {
       if (note.isLocalNew()) {
@@ -355,7 +356,7 @@ watch(
 )
 watch(() => notes.query, applyHighlight)
 watch(() => note.isTrash, (isTrash) => {
-  editor.value?.setEditable(!isTrash)
+  editor.value?.setEditable(!isTrash, false)
   if (isTrash) {
     toolPanel.value = null
     notebookMenuOpen.value = false
